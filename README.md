@@ -77,7 +77,7 @@ Clone o repositório:
 
 Bash
 
-git clone https://github.com/seu-usuario/bankflow-ai.git
+git clone https://github.com/ViniciusCostawj/-BankFlow-AI---Agente-Inteligente-de-Monitoramento-SPB
 cd bankflow-ai
 Instale as dependências:
 
@@ -108,4 +108,4 @@ python agente_spb.py
 Este projeto foi desenhado para rodar com LLMs Locais (Ollama). Isso garante que nenhum dado bancário sensível (CPFs, Valores, Contas) seja enviado para APIs externas (como OpenAI ou Anthropic), mantendo a conformidade com normas de segurança bancária e LGPD.
 
 👨‍💻 Autor
-Desenvolvido por [Seu Nome] Especialista em Monitoramento e Automação de Sistemas Bancários.****
+Desenvolvido por [Vinicius Costa de Paula] Especialista em Monitoramento e Automação de Sistemas Bancários.****
