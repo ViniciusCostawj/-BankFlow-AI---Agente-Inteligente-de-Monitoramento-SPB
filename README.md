@@ -79,6 +79,7 @@ Bash
 
 git clone https://github.com/ViniciusCostawj/-BankFlow-AI---Agente-Inteligente-de-Monitoramento-SPB
 cd bankflow-ai
+
 Instale as dependências:
 
 Bash
