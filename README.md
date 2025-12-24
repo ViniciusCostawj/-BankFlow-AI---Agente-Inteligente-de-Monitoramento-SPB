@@ -1,112 +1,60 @@
-🏦 BankFlow AI - Agente Inteligente de Monitoramento SPB
-AIOps (Artificial Intelligence for IT Operations) aplicado ao monitoramento de transações bancárias do Sistema de Pagamentos Brasileiro (SPB).
+# 🕵️ Agente de IA Forense & Analista SQL (v2.0)
 
-Este projeto é um Agente Autônomo capaz de investigar incidentes em bancos de dados transacionais usando Linguagem Natural. Ele combina a capacidade de raciocínio do Llama 3 com a precisão de queries SQL no PostgreSQL para diagnosticar falhas, rastrear mensagens e gerar relatórios visuais.
+![Python](https://img.shields.io/badge/Python-3.10%2B-blue)
+![LangChain](https://img.shields.io/badge/LangChain-Integration-green)
+![Ollama](https://img.shields.io/badge/Model-Llama3-orange)
+![Status](https://img.shields.io/badge/Status-Production%20Ready-brightgreen)
 
-🚀 Funcionalidades Principais
-🗣️ Busca Natural (Text-to-SQL): Permite que o operador faça perguntas em português (ex: "Quais mensagens foram rejeitadas pelo autorizador hoje?") e converte automaticamente para SQL seguro e otimizado.
+> Um agente autônomo local capaz de realizar investigações forenses em transações bancárias (PIX/SPB) e converter perguntas em linguagem natural para SQL seguro (**Text-to-SQL**).
 
-🧠 Roteamento Temporal Inteligente: O agente entende o contexto de tempo e decide automaticamente qual tabela consultar:
+---
 
-spb.operacao para dados em tempo real (D0).
+## 🚀 Novidades da Versão 2.0
+Esta versão introduz uma arquitetura híbrida para otimização de custos e performance:
 
-consolid.operacao para dados históricos (D-1+).
+* **⚡ Extração Híbrida (Regex + IA):** Implementação de *parsers* Regex para mineração imediata de tags de erro em XMLs brutos (`<AddtlInf>`, `<RsnDesc>`), eliminando a necessidade de enviar payloads gigantes para o LLM.
+* **🛡️ Text-to-SQL Blindado:** Nova camada de *Prompt Engineering* defensivo que previne alucinações de tipagem (ex: forçar tratamento de Inteiros vs Strings no banco).
+* **⏱️ Cálculo de SLA em Tempo Real:** O agente agora calcula a latência de processamento (`delta` entre entrega e consumo) e alerta automaticamente sobre gargalos de performance (> 10s).
+* **🔍 Visão Unificada (Real-time + Legacy):** Algoritmo de busca que cruza dados de tabelas transacionais (`.operacao`) e históricas (`.legado`) em uma única view investigativa.
 
-🕵️ Deep Dive Analysis: Ao receber um ID de transação (NUOP), o agente varre múltiplos schemas, reconstrói a linha do tempo e identifica gargalos.
+---
 
-📊 Visualização Automática: Gera diagramas de fluxo (Mermaid) para facilitar a leitura de logs técnicos por humanos.
+## ⚙️ Arquitetura
 
-🛡️ SQL Sanitization: Camada de segurança que limpa e valida os comandos gerados pela IA antes da execução no banco.
+O sistema opera em dois modos distintos, detectados automaticamente pela entrada do usuário:
 
-🛠️ Stack Tecnológica
-Linguagem: Python 3.12
+### 1. Modo Investigador (Detecção de NUOP)
+Se a entrada for um ID de transação (NUOP), o sistema:
+1.  **Rastreia** o ciclo de vida da mensagem em 3 tabelas diferentes (SPI, SPB, Legado).
+2.  **Analisa** os logs XML usando Regex para encontrar a causa raiz de falhas.
+3.  **Gera** um relatório em Markdown com cronologia e Veredito da IA.
 
-IA / LLM: Llama 3 (via Ollama - Execução 100% Local/Privada)
+### 2. Modo Analista (Text-to-SQL)
+Se a entrada for uma pergunta (ex: *"Quais erros de PIX tivemos hoje?"*), o sistema:
+1.  **Injeta** o esquema do banco de dados no contexto do Llama 3.
+2.  **Gera** uma query SQL sintaticamente correta (PostgreSQL).
+3.  **Sanitiza** a query e a executa em modo leitura.
+4.  **Exibe** os resultados tabulados.
 
-Orquestração: LangChain
+---
 
-Banco de Dados: PostgreSQL (Lib: psycopg2)
+## 🛠️ Stack Tecnológico
 
-Manipulação de Dados: Pandas
+* **Core:** Python 3.10+, Pandas, Psycopg2
+* **IA & Orquestração:** LangChain, Ollama (Llama 3 Local)
+* **Database:** PostgreSQL
+* **Utilities:** Regex (Re), Dotenv
 
-⚙️ Como Funciona a Arquitetura
-Entrada: O usuário digita uma pergunta ou um NUOP.
+---
 
-Classificação: O script detecta se é uma busca natural ou um rastreio específico.
+## 📦 Instalação e Uso
 
-Geração de SQL: Se for busca, o Llama 3 gera a query baseada no schema do banco e nas regras de negócio (diferenciando statusop de statusmsg).
+### Pré-requisitos
+* Python instalado.
+* [Ollama](https://ollama.com/) rodando localmente com o modelo Llama 3 (`ollama run llama3`).
+* Banco de Dados PostgreSQL acessível.
 
-Execução: O Python conecta no Postgres, roda a query e recupera os dados brutos.
-
-Análise Semântica: O Llama 3 analisa os logs retornados, traduz códigos de erro (ex: 320 -> Rejeição) e emite um veredito.
-
-Report: Um arquivo .md é gerado contendo a análise textual e o gráfico visual.
-
-📸 Exemplos de Uso
-1. Busca Inteligente (Natural Language)
-Usuário: "Me mostre as últimas 5 mensagens com erro 313" Agente:
-
-SQL
-
--- SQL Gerado Automaticamente pela IA
-SELECT msgid, TRIM(nuop) as nuop, statusop, statusmsg, ts_inclusao 
-FROM spb.operacao 
-WHERE statusmsg = 313 
-ORDER BY ts_inclusao DESC LIMIT 5;
-2. Análise de Fluxo (NUOP)
-Usuário: 00038166202512126005171 Agente: "Localizei o fluxo. A mensagem entrou pelo APP, foi processada, mas rejeitada pelo Autorizador (Status 320). Relatório visual salvo."
-
-📝 Exemplo de Relatório Gerado
-O sistema cria automaticamente arquivos Markdown com diagramas renderizáveis no GitHub/VS Code:
-
-Snippet de código
-
-graph TD;
-    s0[10:34:22<br>RECEBTO_SUCESSO] --> s1[10:34:25<br>PROCESSANDO]
-    s1 --> s2[10:34:28<br>REJ_AUTORIZADOR (320)]
-📦 Instalação e Configuração
-Pré-requisitos
-Python 3.10+ instalado.
-
-Ollama instalado e rodando localmente.
-
-Acesso a um banco PostgreSQL.
-
-Passo a Passo
-Clone o repositório:
-
-Bash
-
-git clone https://github.com/ViniciusCostawj/-BankFlow-AI---Agente-Inteligente-de-Monitoramento-SPB
-cd bankflow-ai
-
-Instale as dependências:
-
-Bash
-
-pip install pandas psycopg2 langchain-ollama
-Baixe o modelo Llama 3 no Ollama:
-
-Bash
-
-ollama run llama3
-Configure as credenciais do banco no arquivo agente_spb.py:
-
-Python
-
-DB_CONFIG = {
-    "host": "SEU_IP",
-    "database": "SEU_DB",
-    "user": "SEU_USER",
-    "password": "SEU_PASSWORD"
-}
-Execute o agente:
-
-Bash
-
-python agente_spb.py
-⚠️ Nota de Segurança
-Este projeto foi desenhado para rodar com LLMs Locais (Ollama). Isso garante que nenhum dado bancário sensível (CPFs, Valores, Contas) seja enviado para APIs externas (como OpenAI ou Anthropic), mantendo a conformidade com normas de segurança bancária e LGPD.
-
-👨‍💻 Autor
-Desenvolvido por [Vinicius Costa de Paula] Especialista em Monitoramento e Automação de Sistemas Bancários.****
+### 1. Clone o repositório
+```bash
+git clone [https://github.com/seu-usuario/agente-ia-forense.git](https://github.com/seu-usuario/agente-ia-forense.git)
+cd agente-ia-forense
