@@ -55,27 +55,24 @@ Se a entrada for uma pergunta (ex: *"Quais erros de PIX tivemos hoje?"*), o sist
 * Banco de Dados PostgreSQL acessível.
 
 ### 1. Clone o repositório
-```bash
+
 git clone [https://github.com/seu-usuario/agente-ia-forense.git](https://github.com/seu-usuario/agente-ia-forense.git)
 cd agente-ia-forense
+
 2. Configure o Ambiente
 Crie um arquivo .env na raiz do projeto (use o .env.example como base):
-
-Snippet de código
-
 # Configurações do Banco de Dados
-DB_HOST=x.x.x.x
-DB_PORT=xxxx
+DB_HOST=192.168.x.x
+DB_PORT=5432
 DB_NAME=nome_do_banco
 DB_USER=seu_usuario
 DB_PASSWORD=sua_senha
 
 # Configuração da IA (Ollama Local)
 OLLAMA_BASE_URL=http://localhost:11434
+
 3. Instale as Dependências
 Recomenda-se usar um ambiente virtual (venv):
-
-Bash
 
 # Windows
 python -m venv venv
@@ -87,10 +84,11 @@ source venv/bin/activate
 
 # Instalar pacotes
 pip install -r requirements.txt
-4. Execute o Agente
-Bash
 
+4. Execute o Agente
+bash
 python main.py
+
 🧠 Exemplos de Uso
 O sistema identifica automaticamente o que você deseja fazer:
 
@@ -141,4 +139,4 @@ Zero Data Leak: Todo o processamento de IA é feito localmente via Ollama. Nenhu
 Read-Only: O agente é configurado para executar apenas comandos de leitura (SELECT), garantindo a integridade do banco de dados.
 
 Autor
-Desenvolvido por Vinicius Costa LinkedIn | Portfólio
+Desenvolvido por Vinicius Costa
