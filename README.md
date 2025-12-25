@@ -61,12 +61,14 @@ cd agente-ia-forense
 
 2. Configure o Ambiente
 Crie um arquivo .env na raiz do projeto (use o .env.example como base):
+
 # Configurações do Banco de Dados
-DB_HOST=192.168.x.x
-DB_PORT=5432
+DB_HOST=x.x.x.x
+DB_PORT=xxxx
 DB_NAME=nome_do_banco
 DB_USER=seu_usuario
 DB_PASSWORD=sua_senha
+
 
 # Configuração da IA (Ollama Local)
 OLLAMA_BASE_URL=http://localhost:11434
