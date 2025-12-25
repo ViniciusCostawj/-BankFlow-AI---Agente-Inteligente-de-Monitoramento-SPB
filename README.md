@@ -58,3 +58,87 @@ Se a entrada for uma pergunta (ex: *"Quais erros de PIX tivemos hoje?"*), o sist
 ```bash
 git clone [https://github.com/seu-usuario/agente-ia-forense.git](https://github.com/seu-usuario/agente-ia-forense.git)
 cd agente-ia-forense
+2. Configure o Ambiente
+Crie um arquivo .env na raiz do projeto (use o .env.example como base):
+
+Snippet de código
+
+# Configurações do Banco de Dados
+DB_HOST=x.x.x.x
+DB_PORT=xxxx
+DB_NAME=nome_do_banco
+DB_USER=seu_usuario
+DB_PASSWORD=sua_senha
+
+# Configuração da IA (Ollama Local)
+OLLAMA_BASE_URL=http://localhost:11434
+3. Instale as Dependências
+Recomenda-se usar um ambiente virtual (venv):
+
+Bash
+
+# Windows
+python -m venv venv
+.\venv\Scripts\activate
+
+# Linux/Mac
+python3 -m venv venv
+source venv/bin/activate
+
+# Instalar pacotes
+pip install -r requirements.txt
+4. Execute o Agente
+Bash
+
+python main.py
+🧠 Exemplos de Uso
+O sistema identifica automaticamente o que você deseja fazer:
+
+🕵️ Modo Investigação (Cole um ID)
+Ideal para descobrir por que uma transação falhou.
+
+Entrada:
+
+E90400888202407091400... (ID do PIX/NUOP)
+
+Saída:
+
+🔍 Rastreamento: Localiza a operação na tabela spi.legado.
+
+⚡ SLA: "Tempo de consumo: 0.4s (Rápido)".
+
+❌ Erro: Extrai do XML: <RsnDesc>Saldo Insuficiente</RsnDesc>.
+
+📄 Arquivo: Gera relatorio_E904...md.
+
+📊 Modo Analista (Faça uma pergunta)
+Ideal para relatórios rápidos sem escrever SQL.
+
+Entrada:
+
+"Me mostre as últimas 5 transações rejeitadas pelo Bacen hoje"
+
+Saída:
+
+🤖 O Agente gera o SQL:
+
+SQL
+
+SELECT * FROM spi.operacao WHERE statusop = 205 ORDER BY ts_inclusao DESC LIMIT 5;
+📊 Exibe a tabela de resultados no terminal.
+
+📂 Estrutura do Projeto
+Plaintext
+
+.
+├── main.py            # Orquestrador Principal (IA + SQL + Regex)
+├── requirements.txt   # Dependências do Python
+├── .env               # Variáveis de Ambiente (Configuração)
+└── README.md          # Documentação
+🔒 Segurança & Privacidade
+Zero Data Leak: Todo o processamento de IA é feito localmente via Ollama. Nenhum dado bancário sensível é enviado para nuvens públicas (OpenAI/Google).
+
+Read-Only: O agente é configurado para executar apenas comandos de leitura (SELECT), garantindo a integridade do banco de dados.
+
+Autor
+Desenvolvido por Vinicius Costa LinkedIn | Portfólio
