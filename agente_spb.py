@@ -22,7 +22,7 @@ DB_CONFIG = {
     "password": os.getenv("DB_PASSWORD", )
 }
 
-TABELAS_DETALHE = ["spb.operacao", "consolid.operacao", "consolid02.operacao"]
+TABELAS_DETALHE = ["STR.operacao", "STRconsolid.operacao", "STRconsolid02.operacao"]
 
 # --- 2. MAPA DE STATUS ---
 MAPA_STATUS = {
@@ -178,4 +178,5 @@ def main():
                 print("⚠️ NUOP não encontrado.")
 
 if __name__ == "__main__":
+
     main()
